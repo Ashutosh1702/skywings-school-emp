@@ -218,6 +218,37 @@ const seedData = async (exitOnComplete = true) => {
       phone: '+91 98888 11111',
     });
 
+    const student3 = await Student.create({
+      admissionNumber: 'ADM-2026-003',
+      rollNumber: '101',
+      firstName: 'Rohan',
+      lastName: 'Verma',
+      gender: 'male',
+      dateOfBirth: new Date('2012-03-15'),
+      bloodGroup: 'A+',
+      class: class9._id,
+      section: section9A._id,
+      academicSession: session._id,
+      parent: parentProfile._id,
+      email: 'rohan.verma@student.skywings.com',
+      phone: '+91 97410 98765',
+    });
+
+    const student4 = await Student.create({
+      admissionNumber: 'ADM-2026-004',
+      rollNumber: '102',
+      firstName: 'Ananya',
+      lastName: 'Sen',
+      gender: 'female',
+      dateOfBirth: new Date('2012-07-10'),
+      bloodGroup: 'B+',
+      class: class9._id,
+      section: section9A._id,
+      academicSession: session._id,
+      email: 'ananya.sen@student.skywings.com',
+      phone: '+91 98765 22222',
+    });
+
     parentProfile.children.push(student1._id);
     await parentProfile.save();
 
@@ -367,6 +398,28 @@ const seedData = async (exitOnComplete = true) => {
       markedBy: adminUser._id,
     });
 
+    await Attendance.create({
+      student: student3._id,
+      class: class9._id,
+      section: section9A._id,
+      academicSession: session._id,
+      date: today,
+      status: 'present',
+      remarks: 'On time',
+      markedBy: adminUser._id,
+    });
+
+    await Attendance.create({
+      student: student4._id,
+      class: class9._id,
+      section: section9A._id,
+      academicSession: session._id,
+      date: today,
+      status: 'absent',
+      remarks: 'Informed sick leave',
+      markedBy: adminUser._id,
+    });
+
     // 12. Examination & Marks
     const midTermExam = await Exam.create({
       name: 'Mid-Term Examinations 2026',
@@ -434,6 +487,58 @@ const seedData = async (exitOnComplete = true) => {
       assignedBy: teacherProfile._id,
       dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
     });
+
+    // 13.1 Timetable Slots (Module 6)
+    await Timetable.create([
+      {
+        class: class10._id,
+        section: section10A._id,
+        academicSession: session._id,
+        dayOfWeek: 'Monday',
+        periodNumber: 1,
+        startTime: '08:30',
+        endTime: '09:15',
+        subject: mathSub._id,
+        teacher: teacherProfile._id,
+        roomNumber: 'Room 301',
+      },
+      {
+        class: class10._id,
+        section: section10A._id,
+        academicSession: session._id,
+        dayOfWeek: 'Monday',
+        periodNumber: 2,
+        startTime: '09:15',
+        endTime: '10:00',
+        subject: scienceSub._id,
+        teacher: teacherProfile._id,
+        roomNumber: 'Science Lab 2',
+      },
+      {
+        class: class10._id,
+        section: section10A._id,
+        academicSession: session._id,
+        dayOfWeek: 'Tuesday',
+        periodNumber: 1,
+        startTime: '08:30',
+        endTime: '09:15',
+        subject: scienceSub._id,
+        teacher: teacherProfile._id,
+        roomNumber: 'Science Lab 2',
+      },
+      {
+        class: class10._id,
+        section: section10A._id,
+        academicSession: session._id,
+        dayOfWeek: 'Tuesday',
+        periodNumber: 2,
+        startTime: '09:15',
+        endTime: '10:00',
+        subject: mathSub._id,
+        teacher: teacherProfile._id,
+        roomNumber: 'Room 301',
+      },
+    ]);
 
     // 14. Announcement
     await Announcement.create({

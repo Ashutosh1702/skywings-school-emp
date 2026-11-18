@@ -1,51 +1,53 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import ProtectedRoute from '../components/common/ProtectedRoute';
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import ProtectedRoute from "../components/common/ProtectedRoute";
 
 // Layouts
-import AdminLayout from '../layouts/AdminLayout';
-import TeacherLayout from '../layouts/TeacherLayout';
-import ParentLayout from '../layouts/ParentLayout';
+import AdminLayout from "../layouts/AdminLayout";
+import TeacherLayout from "../layouts/TeacherLayout";
+import ParentLayout from "../layouts/ParentLayout";
 
 // Auth & Common Pages
-import Login from '../pages/auth/Login';
-import NotFound from '../pages/common/NotFound';
-import Unauthorized from '../pages/common/Unauthorized';
+import Login from "../pages/auth/Login";
+import NotFound from "../pages/common/NotFound";
+import Unauthorized from "../pages/common/Unauthorized";
 
 // Admin Views
-import Dashboard from '../pages/admin/Dashboard';
-import StudentsView from '../pages/admin/students/StudentsView';
-import TeachersView from '../pages/admin/teachers/TeachersView';
-import ParentsView from '../pages/admin/parents/ParentsView';
-import ClassesView from '../pages/admin/classes/ClassesView';
-import AttendanceView from '../pages/admin/attendance/AttendanceView';
-import FeesView from '../pages/admin/fees/FeesView';
-import ExamsView from '../pages/admin/exams/ExamsView';
-import TimetableView from '../pages/admin/timetable/TimetableView';
-import HomeworkView from '../pages/admin/homework/HomeworkView';
-import AnnouncementsView from '../pages/admin/announcements/AnnouncementsView';
-import ReportsView from '../pages/admin/reports/ReportsView';
-import UsersView from '../pages/admin/users/UsersView';
-import AuditLogsView from '../pages/admin/audit/AuditLogsView';
-import LibraryView from '../pages/admin/library/LibraryView';
-import TransportView from '../pages/admin/transport/TransportView';
-import SchoolSettingsView from '../pages/admin/settings/SchoolSettingsView';
+import Dashboard from "../pages/admin/Dashboard";
+import StudentsView from "../pages/admin/students/StudentsView";
+import TeachersView from "../pages/admin/teachers/TeachersView";
+import ParentsView from "../pages/admin/parents/ParentsView";
+import ClassesView from "../pages/admin/classes/ClassesView";
+import AttendanceView from "../pages/admin/attendance/AttendanceView";
+import FeesView from "../pages/admin/fees/FeesView";
+import ExamsView from "../pages/admin/exams/ExamsView";
+import TimetableView from "../pages/admin/timetable/TimetableView";
+import HomeworkView from "../pages/admin/homework/HomeworkView";
+import AnnouncementsView from "../pages/admin/announcements/AnnouncementsView";
+import ReportsView from "../pages/admin/reports/ReportsView";
+import UsersView from "../pages/admin/users/UsersView";
+import AuditLogsView from "../pages/admin/audit/AuditLogsView";
+import LibraryView from "../pages/admin/library/LibraryView";
+import TransportView from "../pages/admin/transport/TransportView";
+import SchoolSettingsView from "../pages/admin/settings/SchoolSettingsView";
 
 // Teacher Views
-import TeacherDashboard from '../pages/teacher/TeacherDashboard';
+import TeacherDashboard from "../pages/teacher/TeacherDashboard";
 
 // Parent Views
-import ParentDashboard from '../pages/parent/ParentDashboard';
-import ParentChildren from '../pages/parent/ParentChildren';
+import ParentDashboard from "../pages/parent/ParentDashboard";
+import ParentChildren from "../pages/parent/ParentChildren";
 
 // Root redirect handler
 const RootRedirect = () => {
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
-  if (user.role === 'admin') return <Navigate to="/admin/dashboard" replace />;
-  if (user.role === 'teacher') return <Navigate to="/teacher/dashboard" replace />;
-  if (user.role === 'parent') return <Navigate to="/parent/dashboard" replace />;
+  if (user.role === "admin") return <Navigate to="/admin/dashboard" replace />;
+  if (user.role === "teacher")
+    return <Navigate to="/teacher/dashboard" replace />;
+  if (user.role === "parent")
+    return <Navigate to="/parent/dashboard" replace />;
   return <Navigate to="/login" replace />;
 };
 
@@ -58,7 +60,7 @@ const AppRoutes = () => {
       <Route path="/unauthorized" element={<Unauthorized />} />
 
       {/* Protected Admin Routes */}
-      <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
@@ -82,7 +84,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* Protected Teacher Routes */}
-      <Route element={<ProtectedRoute allowedRoles={['teacher', 'admin']} />}>
+      <Route element={<ProtectedRoute allowedRoles={["teacher", "admin"]} />}>
         <Route path="/teacher" element={<TeacherLayout />}>
           <Route index element={<Navigate to="/teacher/dashboard" replace />} />
           <Route path="dashboard" element={<TeacherDashboard />} />
@@ -95,7 +97,7 @@ const AppRoutes = () => {
       </Route>
 
       {/* Protected Parent Routes */}
-      <Route element={<ProtectedRoute allowedRoles={['parent', 'admin']} />}>
+      <Route element={<ProtectedRoute allowedRoles={["parent", "admin"]} />}>
         <Route path="/parent" element={<ParentLayout />}>
           <Route index element={<Navigate to="/parent/dashboard" replace />} />
           <Route path="dashboard" element={<ParentDashboard />} />
