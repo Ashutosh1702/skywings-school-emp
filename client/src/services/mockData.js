@@ -573,18 +573,18 @@ export const mockUsers = [
 ];
 
 export const mockSchoolProfile = {
-  name: 'Skywings International Academy',
-  code: 'SKYWINGS-001',
-  affiliationNumber: 'CBSE-2026-9874',
-  email: 'admin@skywingsschool.com',
-  phone: '+91 98765 43210',
-  website: 'https://skywingsschool.com',
+  name: '',
+  code: '',
+  affiliationNumber: '',
+  email: '',
+  phone: '',
+  website: '',
   address: {
-    street: 'Plot No. 42, Tech Park Enclave',
-    city: 'Bangalore',
-    state: 'Karnataka',
-    zipCode: '560001',
-    country: 'India',
+    street: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: '',
   },
 };
 

@@ -1,32 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import api from '../../../services/api';
-import { useToast } from '../../../context/ToastContext';
-import Button from '../../../components/ui/Button';
-import Input from '../../../components/ui/Input';
-import Badge from '../../../components/ui/Badge';
-import Modal from '../../../components/ui/Modal';
-import LoadingSpinner from '../../../components/ui/LoadingSpinner';
+import React, { useState, useEffect } from "react";
+import api from "../../../services/api";
+import { useToast } from "../../../context/ToastContext";
+import Button from "../../../components/ui/Button";
+import Input from "../../../components/ui/Input";
+import Badge from "../../../components/ui/Badge";
+import Modal from "../../../components/ui/Modal";
+import LoadingSpinner from "../../../components/ui/LoadingSpinner";
 
 const SchoolSettingsView = () => {
   const { showToast } = useToast();
-  const [tab, setTab] = useState('profile');
+  const [tab, setTab] = useState("profile");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   // School profile state
   const [profile, setProfile] = useState({
-    name: '',
-    code: '',
-    affiliationNumber: '',
-    email: '',
-    phone: '',
-    website: '',
+    name: "",
+    code: "",
+    affiliationNumber: "",
+    email: "",
+    phone: "",
+    website: "",
     address: {
-      street: '',
-      city: '',
-      state: '',
-      zipCode: '',
-      country: '',
+      street: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      country: "",
     },
   });
 
@@ -40,42 +40,48 @@ const SchoolSettingsView = () => {
   const [isSubjectModalOpen, setIsSubjectModalOpen] = useState(false);
 
   const [sessionForm, setSessionForm] = useState({
-    name: '2027-2028',
-    startDate: '2027-04-01',
-    endDate: '2028-03-31',
+    name: "2027-2028",
+    startDate: "2027-04-01",
+    endDate: "2028-03-31",
     isCurrent: false,
   });
 
   const [subjectForm, setSubjectForm] = useState({
-    name: '',
-    code: '',
-    type: 'theory',
+    name: "",
+    code: "",
+    type: "theory",
   });
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [profileRes, sessionsRes, subjectsRes, classesRes] = await Promise.all([
-        api.getSchoolProfile(),
-        api.getAcademicSessions(),
-        api.getSubjects(),
-        api.getClasses(),
-      ]);
+      const [profileRes, sessionsRes, subjectsRes, classesRes] =
+        await Promise.all([
+          api.getSchoolProfile(),
+          api.getAcademicSessions(),
+          api.getSubjects(),
+          api.getClasses(),
+        ]);
 
       if (profileRes.success && profileRes.data) {
+        // If it's the initial default demo data, keep fields empty so placeholders show up without needing to erase!
+        const isDefaultDemo =
+          profileRes.data.code === "SKYWINGS-001" &&
+          profileRes.data.email === "admin@skywingsschool.com";
+
         setProfile({
-          name: profileRes.data.name || '',
-          code: profileRes.data.code || '',
-          affiliationNumber: profileRes.data.affiliationNumber || '',
-          email: profileRes.data.email || '',
-          phone: profileRes.data.phone || '',
-          website: profileRes.data.website || '',
+          name: isDefaultDemo ? "" : profileRes.data.name || "",
+          code: isDefaultDemo ? "" : profileRes.data.code || "",
+          affiliationNumber: isDefaultDemo ? "" : profileRes.data.affiliationNumber || "",
+          email: isDefaultDemo ? "" : profileRes.data.email || "",
+          phone: isDefaultDemo ? "" : profileRes.data.phone || "",
+          website: isDefaultDemo ? "" : profileRes.data.website || "",
           address: {
-            street: profileRes.data.address?.street || '',
-            city: profileRes.data.address?.city || '',
-            state: profileRes.data.address?.state || '',
-            zipCode: profileRes.data.address?.zipCode || '',
-            country: profileRes.data.address?.country || '',
+            street: isDefaultDemo ? "" : profileRes.data.address?.street || "",
+            city: isDefaultDemo ? "" : profileRes.data.address?.city || "",
+            state: isDefaultDemo ? "" : profileRes.data.address?.state || "",
+            zipCode: isDefaultDemo ? "" : profileRes.data.address?.zipCode || "",
+            country: isDefaultDemo ? "" : profileRes.data.address?.country || "",
           },
         });
       }
@@ -84,7 +90,7 @@ const SchoolSettingsView = () => {
       if (subjectsRes.success) setSubjects(subjectsRes.data);
       if (classesRes.success) setClasses(classesRes.data);
     } catch (err) {
-      showToast('Error loading school settings: ' + err.message, 'error');
+      showToast("Error loading school settings: " + err.message, "error");
     } finally {
       setLoading(false);
     }
@@ -98,15 +104,34 @@ const SchoolSettingsView = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const res = await api.updateSchoolProfile(profile);
+      const payload = {
+        name: profile.name.trim() || "Skywings International Academy",
+        code: profile.code.trim() || "SKYWINGS-001",
+        affiliationNumber: profile.affiliationNumber.trim(),
+        email: profile.email.trim() || "admin@skywingsschool.com",
+        phone: profile.phone.trim() || "+91 98765 43210",
+        website: profile.website.trim(),
+        address: {
+          street: profile.address.street.trim(),
+          city: profile.address.city.trim(),
+          state: profile.address.state.trim(),
+          zipCode: profile.address.zipCode.trim(),
+          country: profile.address.country.trim(),
+        },
+      };
+
+      const res = await api.updateSchoolProfile(payload);
 
       if (res.success) {
-        showToast('School institutional profile updated successfully!', 'success');
+        showToast(
+          "School institutional profile updated successfully!",
+          "success",
+        );
       } else {
-        showToast(res.message || 'Update failed', 'error');
+        showToast(res.message || "Update failed", "error");
       }
     } catch (err) {
-      showToast(err.message, 'error');
+      showToast(err.message, "error");
     } finally {
       setSubmitting(false);
     }
@@ -119,14 +144,14 @@ const SchoolSettingsView = () => {
       const res = await api.createAcademicSession(sessionForm);
 
       if (res.success) {
-        showToast('Academic session cycle created!', 'success');
+        showToast("Academic session cycle created!", "success");
         setIsSessionModalOpen(false);
         fetchData();
       } else {
-        showToast(res.message || 'Creation failed', 'error');
+        showToast(res.message || "Creation failed", "error");
       }
     } catch (err) {
-      showToast(err.message, 'error');
+      showToast(err.message, "error");
     } finally {
       setSubmitting(false);
     }
@@ -138,13 +163,13 @@ const SchoolSettingsView = () => {
     try {
       const res = await api.createSubject(subjectForm);
       if (res.success) {
-        showToast('New subject added to school curriculum!', 'success');
+        showToast("New subject added to school curriculum!", "success");
         setIsSubjectModalOpen(false);
-        setSubjectForm({ name: '', code: '', type: 'theory' });
+        setSubjectForm({ name: "", code: "", type: "theory" });
         fetchData();
       }
     } catch (err) {
-      showToast(err.message, 'error');
+      showToast(err.message, "error");
     } finally {
       setSubmitting(false);
     }
@@ -156,31 +181,31 @@ const SchoolSettingsView = () => {
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setTab('profile')}
+            onClick={() => setTab("profile")}
             className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition ${
-              tab === 'profile'
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              tab === "profile"
+                ? "bg-blue-600 text-white"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
             }`}
           >
             🏫 School Institutional Profile
           </button>
           <button
-            onClick={() => setTab('sessions')}
+            onClick={() => setTab("sessions")}
             className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition ${
-              tab === 'sessions'
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              tab === "sessions"
+                ? "bg-blue-600 text-white"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
             }`}
           >
             📅 Academic Sessions
           </button>
           <button
-            onClick={() => setTab('subjects')}
+            onClick={() => setTab("subjects")}
             className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition ${
-              tab === 'subjects'
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              tab === "subjects"
+                ? "bg-blue-600 text-white"
+                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
             }`}
           >
             📖 Curriculum Subjects
@@ -190,40 +215,55 @@ const SchoolSettingsView = () => {
 
       {loading ? (
         <LoadingSpinner label="Loading institutional settings..." />
-      ) : tab === 'profile' ? (
+      ) : tab === "profile" ? (
         /* School Profile Form */
         <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-6">
           <div className="mb-6 pb-4 border-b">
-            <h3 className="font-bold text-slate-900 text-lg">School Profile & Registration</h3>
-            <p className="text-xs text-slate-500">Official institution details appearing on receipts and certificates</p>
+            <h3 className="font-bold text-slate-900 text-lg">
+              School Profile & Registration
+            </h3>
+            <p className="text-xs text-slate-500">
+              Official institution details appearing on receipts and
+              certificates
+            </p>
           </div>
 
           <form onSubmit={handleUpdateProfile} className="space-y-4 max-w-3xl">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="School Legal Name *"
+                placeholder="Skywings International Academy"
                 value={profile.name}
-                onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                required
+                onChange={(e) =>
+                  setProfile({ ...profile, name: e.target.value })
+                }
               />
               <Input
                 label="School Code *"
+                placeholder="SKYWINGS-001"
                 value={profile.code}
-                onChange={(e) => setProfile({ ...profile, code: e.target.value })}
-                required
+                onChange={(e) =>
+                  setProfile({ ...profile, code: e.target.value })
+                }
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Board Affiliation Number"
+                placeholder="CBSE-2026-9874"
                 value={profile.affiliationNumber}
-                onChange={(e) => setProfile({ ...profile, affiliationNumber: e.target.value })}
+                onChange={(e) =>
+                  setProfile({ ...profile, affiliationNumber: e.target.value })
+                }
               />
               <Input
                 label="Official Website"
+                placeholder="https://skywingsschool.com"
                 value={profile.website}
-                onChange={(e) => setProfile({ ...profile, website: e.target.value })}
+                onChange={(e) =>
+                  setProfile({ ...profile, website: e.target.value })
+                }
               />
             </div>
 
@@ -231,15 +271,19 @@ const SchoolSettingsView = () => {
               <Input
                 label="Contact Email *"
                 type="email"
+                placeholder="admin@skywingsschool.com"
                 value={profile.email}
-                onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                required
+                onChange={(e) =>
+                  setProfile({ ...profile, email: e.target.value })
+                }
               />
               <Input
                 label="Contact Phone *"
+                placeholder="+91 98765 43210"
                 value={profile.phone}
-                onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                required
+                onChange={(e) =>
+                  setProfile({ ...profile, phone: e.target.value })
+                }
               />
             </div>
 
@@ -249,7 +293,7 @@ const SchoolSettingsView = () => {
               </label>
               <div className="space-y-3">
                 <Input
-                  placeholder="Street / Campus Address"
+                  placeholder="Plot No. 42, Tech Park Enclave"
                   value={profile.address.street}
                   onChange={(e) =>
                     setProfile({
@@ -260,7 +304,7 @@ const SchoolSettingsView = () => {
                 />
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <Input
-                    placeholder="City"
+                    placeholder="Bangalore"
                     value={profile.address.city}
                     onChange={(e) =>
                       setProfile({
@@ -270,7 +314,7 @@ const SchoolSettingsView = () => {
                     }
                   />
                   <Input
-                    placeholder="State"
+                    placeholder="Karnataka"
                     value={profile.address.state}
                     onChange={(e) =>
                       setProfile({
@@ -280,22 +324,28 @@ const SchoolSettingsView = () => {
                     }
                   />
                   <Input
-                    placeholder="Zip / PIN Code"
+                    placeholder="560001"
                     value={profile.address.zipCode}
                     onChange={(e) =>
                       setProfile({
                         ...profile,
-                        address: { ...profile.address, zipCode: e.target.value },
+                        address: {
+                          ...profile.address,
+                          zipCode: e.target.value,
+                        },
                       })
                     }
                   />
                   <Input
-                    placeholder="Country"
+                    placeholder="India"
                     value={profile.address.country}
                     onChange={(e) =>
                       setProfile({
                         ...profile,
-                        address: { ...profile.address, country: e.target.value },
+                        address: {
+                          ...profile.address,
+                          country: e.target.value,
+                        },
                       })
                     }
                   />
@@ -310,13 +360,17 @@ const SchoolSettingsView = () => {
             </div>
           </form>
         </div>
-      ) : tab === 'sessions' ? (
+      ) : tab === "sessions" ? (
         /* Academic Sessions View */
         <div className="space-y-4">
           <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200/80">
             <div>
-              <h4 className="font-bold text-slate-800 text-base">Academic Session Cycles</h4>
-              <p className="text-xs text-slate-500">Manage school calendar cycles and active operational term</p>
+              <h4 className="font-bold text-slate-800 text-base">
+                Academic Session Cycles
+              </h4>
+              <p className="text-xs text-slate-500">
+                Manage school calendar cycles and active operational term
+              </p>
             </div>
             <Button size="sm" onClick={() => setIsSessionModalOpen(true)}>
               + Add Academic Session
@@ -336,7 +390,9 @@ const SchoolSettingsView = () => {
               <tbody className="divide-y divide-slate-100">
                 {sessions.map((s) => (
                   <tr key={s._id} className="hover:bg-slate-50/60 transition">
-                    <td className="py-3 px-4 font-bold text-slate-800">{s.name}</td>
+                    <td className="py-3 px-4 font-bold text-slate-800">
+                      {s.name}
+                    </td>
                     <td className="py-3 px-4 text-slate-500 text-xs">
                       {new Date(s.startDate).toLocaleDateString()}
                     </td>
@@ -344,8 +400,8 @@ const SchoolSettingsView = () => {
                       {new Date(s.endDate).toLocaleDateString()}
                     </td>
                     <td className="py-3 px-4">
-                      <Badge status={s.isCurrent ? 'active' : 'inactive'}>
-                        {s.isCurrent ? 'Current Active Session' : 'Archived'}
+                      <Badge status={s.isCurrent ? "active" : "inactive"}>
+                        {s.isCurrent ? "Current Active Session" : "Archived"}
                       </Badge>
                     </td>
                   </tr>
@@ -359,8 +415,12 @@ const SchoolSettingsView = () => {
         <div className="space-y-4">
           <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200/80">
             <div>
-              <h4 className="font-bold text-slate-800 text-base">Curriculum Subjects</h4>
-              <p className="text-xs text-slate-500">Subjects taught across grade levels and exam papers</p>
+              <h4 className="font-bold text-slate-800 text-base">
+                Curriculum Subjects
+              </h4>
+              <p className="text-xs text-slate-500">
+                Subjects taught across grade levels and exam papers
+              </p>
             </div>
             <Button size="sm" onClick={() => setIsSubjectModalOpen(true)}>
               + Add Curriculum Subject
@@ -383,7 +443,9 @@ const SchoolSettingsView = () => {
                     <td className="py-3 px-4 font-mono font-medium text-blue-600 text-xs">
                       {sub.code}
                     </td>
-                    <td className="py-3 px-4 font-semibold text-slate-800">{sub.name}</td>
+                    <td className="py-3 px-4 font-semibold text-slate-800">
+                      {sub.name}
+                    </td>
                     <td className="py-3 px-4 uppercase text-xs font-semibold text-slate-500">
                       {sub.type}
                     </td>
@@ -409,7 +471,9 @@ const SchoolSettingsView = () => {
             label="Session Name *"
             placeholder="e.g. 2027-2028"
             value={sessionForm.name}
-            onChange={(e) => setSessionForm({ ...sessionForm, name: e.target.value })}
+            onChange={(e) =>
+              setSessionForm({ ...sessionForm, name: e.target.value })
+            }
             required
           />
           <div className="grid grid-cols-2 gap-4">
@@ -417,14 +481,18 @@ const SchoolSettingsView = () => {
               label="Session Start Date *"
               type="date"
               value={sessionForm.startDate}
-              onChange={(e) => setSessionForm({ ...sessionForm, startDate: e.target.value })}
+              onChange={(e) =>
+                setSessionForm({ ...sessionForm, startDate: e.target.value })
+              }
               required
             />
             <Input
               label="Session End Date *"
               type="date"
               value={sessionForm.endDate}
-              onChange={(e) => setSessionForm({ ...sessionForm, endDate: e.target.value })}
+              onChange={(e) =>
+                setSessionForm({ ...sessionForm, endDate: e.target.value })
+              }
               required
             />
           </div>
@@ -433,15 +501,24 @@ const SchoolSettingsView = () => {
               type="checkbox"
               id="isCurrentSession"
               checked={sessionForm.isCurrent}
-              onChange={(e) => setSessionForm({ ...sessionForm, isCurrent: e.target.checked })}
+              onChange={(e) =>
+                setSessionForm({ ...sessionForm, isCurrent: e.target.checked })
+              }
               className="rounded text-blue-600 focus:ring-blue-500"
             />
-            <label htmlFor="isCurrentSession" className="text-xs font-semibold text-slate-700">
+            <label
+              htmlFor="isCurrentSession"
+              className="text-xs font-semibold text-slate-700"
+            >
               Set as Current Active Session
             </label>
           </div>
           <div className="flex justify-end gap-3 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={() => setIsSessionModalOpen(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsSessionModalOpen(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" isLoading={submitting}>
@@ -462,14 +539,21 @@ const SchoolSettingsView = () => {
             label="Subject Code *"
             placeholder="e.g. COMP10"
             value={subjectForm.code}
-            onChange={(e) => setSubjectForm({ ...subjectForm, code: e.target.value.toUpperCase() })}
+            onChange={(e) =>
+              setSubjectForm({
+                ...subjectForm,
+                code: e.target.value.toUpperCase(),
+              })
+            }
             required
           />
           <Input
             label="Subject Title *"
             placeholder="e.g. Computer Applications"
             value={subjectForm.name}
-            onChange={(e) => setSubjectForm({ ...subjectForm, name: e.target.value })}
+            onChange={(e) =>
+              setSubjectForm({ ...subjectForm, name: e.target.value })
+            }
             required
           />
           <div>
@@ -478,7 +562,9 @@ const SchoolSettingsView = () => {
             </label>
             <select
               value={subjectForm.type}
-              onChange={(e) => setSubjectForm({ ...subjectForm, type: e.target.value })}
+              onChange={(e) =>
+                setSubjectForm({ ...subjectForm, type: e.target.value })
+              }
               className="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-lg focus:outline-none"
             >
               <option value="theory">Theory Only</option>
@@ -487,7 +573,11 @@ const SchoolSettingsView = () => {
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={() => setIsSubjectModalOpen(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsSubjectModalOpen(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" isLoading={submitting}>
@@ -501,4 +591,3 @@ const SchoolSettingsView = () => {
 };
 
 export default SchoolSettingsView;
-
