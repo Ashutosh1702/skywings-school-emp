@@ -22,6 +22,8 @@ const Announcement = require('../models/Announcement');
 const Book = require('../models/Book');
 const BookIssue = require('../models/BookIssue');
 const TransportRoute = require('../models/TransportRoute');
+const Banner = require('../models/Banner');
+const Gallery = require('../models/Gallery');
 
 const seedData = async (exitOnComplete = true) => {
   try {
@@ -55,6 +57,8 @@ const seedData = async (exitOnComplete = true) => {
       Book.deleteMany(),
       BookIssue.deleteMany(),
       TransportRoute.deleteMany(),
+      Banner.deleteMany(),
+      Gallery.deleteMany(),
     ]);
     console.log('Cleared all collections.');
 
@@ -74,6 +78,33 @@ const seedData = async (exitOnComplete = true) => {
       affiliationNumber: 'CBSE-2026-9874',
       email: 'admin@skywingsschool.com',
       phone: '+91 98765 43210',
+      website: 'https://skywingsschool.com',
+      tagline: 'Empowering Young Minds For A Transformative Future',
+      establishedYear: '2005',
+      logo: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=200&q=80',
+      principalName: 'Dr. Rajesh Sharma',
+      principalDesignation: 'Principal & Academic Director',
+      principalQualifications: 'Ph.D in Educational Leadership, M.Sc Physics, B.Ed',
+      principalPhoto:
+        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80',
+      principalMessage:
+        'Welcome to Skywings International Academy. In an era defined by rapid technological and social transformation, education must transcend traditional boundaries. Here, we nurture each child’s intellectual curiosity, cultivate empathy, and foster leadership grounded in ethical responsibility. Together with our passionate faculty and supportive parents, we build the future one child at a time.',
+      principalBio:
+        'Dr. Rajesh Sharma brings over 25 years of educational administration experience across premier institutions in India. Recipient of the National Educational Excellence Award.',
+      stats: {
+        totalStudents: 1250,
+        totalTeachers: 68,
+        classrooms: 45,
+        labs: 8,
+        awardsCount: 35,
+      },
+      socialLinks: {
+        facebook: 'https://facebook.com/skywingsschool',
+        twitter: 'https://twitter.com/skywingsschool',
+        instagram: 'https://instagram.com/skywingsschool',
+        youtube: 'https://youtube.com/skywingsschool',
+        linkedin: 'https://linkedin.com/school/skywingsschool',
+      },
       address: {
         street: 'Plot No. 42, Tech Park Enclave',
         city: 'Bangalore',
@@ -540,16 +571,186 @@ const seedData = async (exitOnComplete = true) => {
       },
     ]);
 
-    // 14. Announcement
-    await Announcement.create({
-      title: 'Annual Sports Meet & Cultural Showcase 2026',
-      message:
-        'Skywings International Academy is proud to host the Annual Sports Meet from November 20 to 22. All parents and students are warmly invited.',
-      targetAudience: ['all'],
-      priority: 'important',
-      author: adminUser._id,
-      status: 'published',
-    });
+    // 14. Announcements, Notices & Events
+    await Announcement.create([
+      {
+        title: 'Annual Sports Meet & Cultural Showcase 2026',
+        message:
+          'Skywings International Academy is proud to host the Annual Sports Meet from November 20 to 22. All parents and students are warmly invited.',
+        targetAudience: ['all'],
+        priority: 'important',
+        category: 'event',
+        eventDate: new Date('2026-11-20'),
+        location: 'Main Sports Complex',
+        isPublicWebsite: true,
+        author: adminUser._id,
+        status: 'published',
+      },
+      {
+        title: 'Mid-Term Examination Schedule Released (Grades 8-10)',
+        message:
+          'The detailed date sheet for Mid-Term Examinations commencing December 1, 2026 has been published. Students can view room assignments in the portal.',
+        targetAudience: ['all'],
+        priority: 'urgent',
+        category: 'circular',
+        isPublicWebsite: true,
+        author: adminUser._id,
+        status: 'published',
+      },
+      {
+        title: 'Inter-School Robotics & AI Science Exhibition',
+        message:
+          'Over 40 leading schools across Karnataka will participate in the Skywings NextGen Innovation Hackathon and STEM display.',
+        targetAudience: ['all'],
+        priority: 'normal',
+        category: 'event',
+        eventDate: new Date('2026-12-15'),
+        location: 'Science & Robotics Block',
+        isPublicWebsite: true,
+        author: adminUser._id,
+        status: 'published',
+      },
+      {
+        title: 'Admissions Open for Academic Session 2026-2027',
+        message:
+          'Registrations are now open for Pre-Primary through Senior Secondary Grade 11. Early aptitude assessments will begin next month.',
+        targetAudience: ['all'],
+        priority: 'important',
+        category: 'notice',
+        isPublicWebsite: true,
+        author: adminUser._id,
+        status: 'published',
+      },
+      {
+        title: 'Winter Vacation & Annual Day Ceremony Notice',
+        message:
+          'Winter vacation will commence on December 24, 2026. The Annual Day Prize Distribution ceremony will be held on December 23 evening.',
+        targetAudience: ['all'],
+        priority: 'normal',
+        category: 'calendar',
+        eventDate: new Date('2026-12-23'),
+        location: 'Grand Auditorium',
+        isPublicWebsite: true,
+        author: adminUser._id,
+        status: 'published',
+      },
+    ]);
+
+    // 14.1 Homepage Banners
+    await Banner.create([
+      {
+        title: 'Empowering Young Minds For A Transformative Future',
+        subtitle:
+          'Excellence in CBSE Academics, Global STEM Innovation, and Leadership Building since 2005.',
+        imageUrl:
+          'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1600&q=80',
+        badgeText: 'CBSE Affiliated • Admissions 2026-27 Open',
+        buttonText: 'Apply For Admission',
+        linkUrl: '/contact',
+        order: 1,
+        isActive: true,
+      },
+      {
+        title: 'World-Class STEM Robotics & Advanced Science Labs',
+        subtitle:
+          'Hands-on experimental learning equipped with state-of-the-art physics, chemistry, and AI computing suites.',
+        imageUrl:
+          'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1600&q=80',
+        badgeText: 'Experiential STEM Learning',
+        buttonText: 'Explore Academics',
+        linkUrl: '/academics',
+        order: 2,
+        isActive: true,
+      },
+      {
+        title: 'Nurturing Champions In Sports, Culture & Arts',
+        subtitle:
+          'Olympic standard basketball courts, FIFA-certified turf, swimming pool, and vibrant music studios.',
+        imageUrl:
+          'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=1600&q=80',
+        badgeText: 'Holistic Development',
+        buttonText: 'View Campus Gallery',
+        linkUrl: '/gallery',
+        order: 3,
+        isActive: true,
+      },
+    ]);
+
+    // 14.2 Photo Gallery Items
+    await Gallery.create([
+      {
+        title: 'Modern Academic Campus & Main Administration Block',
+        category: 'Campus',
+        imageUrl:
+          'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=800&q=80',
+        description: 'Lush green 15-acre campus with eco-friendly infrastructure.',
+        isFeatured: true,
+        order: 1,
+      },
+      {
+        title: 'Advanced AI & Robotics Computing Laboratory',
+        category: 'Labs',
+        imageUrl:
+          'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=800&q=80',
+        description: 'Next-gen coding, automation and electronics workbench.',
+        isFeatured: true,
+        order: 2,
+      },
+      {
+        title: 'Inter-School Football Championship Match',
+        category: 'Sports',
+        imageUrl:
+          'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80',
+        description: 'Skywings team winning the Regional Under-16 Trophy.',
+        isFeatured: true,
+        order: 3,
+      },
+      {
+        title: 'Annual Cultural Festival & Classical Dance Showcase',
+        category: 'Cultural',
+        imageUrl:
+          'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80',
+        description: 'Students performing traditional and contemporary choreography.',
+        isFeatured: false,
+        order: 4,
+      },
+      {
+        title: 'Physics & Chemistry Exploratory Science Center',
+        category: 'Labs',
+        imageUrl:
+          'https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80',
+        description: 'High-safety student research benches and spectrometry tools.',
+        isFeatured: true,
+        order: 5,
+      },
+      {
+        title: 'Central Digital Library & Research Commons',
+        category: 'Campus',
+        imageUrl:
+          'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=800&q=80',
+        description: 'Over 20,000 books, international research journals, and e-learning pods.',
+        isFeatured: false,
+        order: 6,
+      },
+      {
+        title: 'Olympic-Sized Swimming Pavilion & Aquatics Training',
+        category: 'Sports',
+        imageUrl:
+          'https://images.unsplash.com/photo-1576610616656-d3aa5d1f4534?auto=format&fit=crop&w=800&q=80',
+        description: 'All-weather temperature-controlled swimming pool with certified coaches.',
+        isFeatured: false,
+        order: 7,
+      },
+      {
+        title: 'Annual Day Academic Graduation Ceremony',
+        category: 'Annual Day',
+        imageUrl:
+          'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80',
+        description: 'Felicitation of Grade 10 & 12 Board Toppers.',
+        isFeatured: true,
+        order: 8,
+      },
+    ]);
 
     // 15. Library Books & Issue (Module 15)
     const book1 = await Book.create({

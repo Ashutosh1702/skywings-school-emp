@@ -46,8 +46,67 @@ const createSubject = async (req, res, next) => {
   }
 };
 
+// @desc    Update a subject
+// @route   PUT /api/subjects/:id
+// @access  Private (Admin only)
+const updateSubject = async (req, res, next) => {
+  try {
+    const subject = await Subject.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    }).populate('classes', 'name numericGrade');
+
+    if (!subject) {
+      return res.status(404).json({ success: false, message: 'Subject not found' });
+    }
+
+    if (req.user) {
+      await logAction({
+        userId: req.user._id,
+        action: 'UPDATE_SUBJECT',
+        entity: 'Subject',
+        entityId: subject._id,
+        details: req.body,
+      });
+    }
+
+    res.status(200).json({ success: true, data: subject });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete a subject
+// @route   DELETE /api/subjects/:id
+// @access  Private (Admin only)
+const deleteSubject = async (req, res, next) => {
+  try {
+    const subject = await Subject.findByIdAndDelete(req.params.id);
+
+    if (!subject) {
+      return res.status(404).json({ success: false, message: 'Subject not found' });
+    }
+
+    if (req.user) {
+      await logAction({
+        userId: req.user._id,
+        action: 'DELETE_SUBJECT',
+        entity: 'Subject',
+        entityId: subject._id,
+        details: { name: subject.name, code: subject.code },
+      });
+    }
+
+    res.status(200).json({ success: true, message: 'Subject deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getSubjects,
   createSubject,
+  updateSubject,
+  deleteSubject,
 };
 

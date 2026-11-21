@@ -903,6 +903,113 @@ export const api = {
         return { success: true, message: "Stop added to route successfully" };
       },
     ),
+
+  // Public CMS & Website Data
+  getPublicWebsiteData: () =>
+    safeExecute(
+      () => axiosInstance.get("/public/website-data"),
+      () => ({
+        success: true,
+        data: {
+          school: runtimeProfile,
+          banners: mock.mockBanners,
+          gallery: mock.mockGallery,
+          notices: runtimeAnnouncements.filter(
+            (a) => a.category !== "event" && a.category !== "calendar",
+          ),
+          events: runtimeAnnouncements.filter(
+            (a) => a.category === "event" || a.category === "calendar",
+          ),
+          teachers: runtimeTeachers,
+          classes: runtimeClasses,
+          sessions: runtimeSessions,
+        },
+      }),
+    ),
+
+  getBanners: () =>
+    safeExecute(
+      () => axiosInstance.get("/banners/public"),
+      () => ({ success: true, count: mock.mockBanners.length, data: mock.mockBanners }),
+    ),
+
+  getAllBanners: () =>
+    safeExecute(
+      () => axiosInstance.get("/banners"),
+      () => ({ success: true, count: mock.mockBanners.length, data: mock.mockBanners }),
+    ),
+
+  createBanner: (data) =>
+    safeExecute(
+      () => axiosInstance.post("/banners", data),
+      () => {
+        const item = { _id: "ban-" + Date.now(), ...data };
+        return { success: true, data: item };
+      },
+    ),
+
+  updateBanner: (id, data) =>
+    safeExecute(
+      () => axiosInstance.put(`/banners/${id}`, data),
+      () => ({ success: true, data }),
+    ),
+
+  deleteBanner: (id) =>
+    safeExecute(
+      () => axiosInstance.delete(`/banners/${id}`),
+      () => ({ success: true, message: "Banner deleted" }),
+    ),
+
+  getGallery: (category) =>
+    safeExecute(
+      () => axiosInstance.get(category && category !== "All" ? `/gallery?category=${category}` : "/gallery"),
+      () => {
+        const filtered =
+          category && category !== "All"
+            ? mock.mockGallery.filter((g) => g.category === category)
+            : mock.mockGallery;
+        return { success: true, count: filtered.length, data: filtered };
+      },
+    ),
+
+  createGalleryItem: (data) =>
+    safeExecute(
+      () => axiosInstance.post("/gallery", data),
+      () => ({ success: true, data: { _id: "gal-" + Date.now(), ...data } }),
+    ),
+
+  updateGalleryItem: (id, data) =>
+    safeExecute(
+      () => axiosInstance.put(`/gallery/${id}`, data),
+      () => ({ success: true, data }),
+    ),
+
+  deleteGalleryItem: (id) =>
+    safeExecute(
+      () => axiosInstance.delete(`/gallery/${id}`),
+      () => ({ success: true, message: "Gallery item deleted" }),
+    ),
+
+  getPublicTimetable: (classId, sectionId) =>
+    safeExecute(
+      () => axiosInstance.get(`/public/timetable?classId=${classId || ""}&sectionId=${sectionId || ""}`),
+      () => {
+        let list = [...runtimeTimetable];
+        if (classId) list = list.filter((t) => t.class?._id === classId || t.class === classId);
+        if (sectionId) list = list.filter((t) => t.section?._id === sectionId || t.section === sectionId);
+        return { success: true, count: list.length, data: list };
+      },
+    ),
+
+  uploadImage: async (payload) => {
+    try {
+      const res = await axiosInstance.post("/upload", payload);
+      return res;
+    } catch (err) {
+      // If server is offline, return the base64 or payload as a data URL so image works in UI
+      return { success: true, url: payload.image, message: "Stored locally in browser" };
+    }
+  },
 };
 
 export default api;

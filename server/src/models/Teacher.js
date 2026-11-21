@@ -44,6 +44,15 @@ const teacherSchema = new mongoose.Schema(
       type: String,
       default: 'M.Ed / M.Sc',
     },
+    photo: {
+      type: String,
+      default: '',
+    },
+    bio: {
+      type: String,
+      default: '',
+      trim: true,
+    },
     subjects: [
       {
         type: mongoose.Schema.Types.ObjectId,

@@ -7,7 +7,7 @@ const {
 } = require('../controllers/timetableController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
-router.get('/', protect, getTimetable);
+router.get('/', getTimetable);
 router.post('/', protect, authorize('admin'), createTimetableSlot);
 router.delete('/:id', protect, authorize('admin'), deleteTimetableSlot);
 

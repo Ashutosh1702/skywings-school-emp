@@ -49,6 +49,54 @@ const schoolSchema = new mongoose.Schema(
       type: String,
       default: 'https://skywingsschool.com',
     },
+    tagline: {
+      type: String,
+      default: 'Empowering Young Minds for a Brighter Tomorrow',
+    },
+    establishedYear: {
+      type: String,
+      default: '2005',
+    },
+    principalName: {
+      type: String,
+      default: 'Dr. Rajesh Sharma',
+    },
+    principalDesignation: {
+      type: String,
+      default: 'Principal & Academic Director',
+    },
+    principalQualifications: {
+      type: String,
+      default: 'Ph.D in Education, M.Sc Physics, B.Ed',
+    },
+    principalPhoto: {
+      type: String,
+      default: '',
+    },
+    principalMessage: {
+      type: String,
+      default:
+        'Welcome to Skywings International Academy. We believe every child is born with unique potential. Our mission is to ignite that spark through inquiry-based learning, strong moral values, and state-of-the-art facilities. We prepare students not just for board examinations, but for life.',
+    },
+    principalBio: {
+      type: String,
+      default:
+        'Dr. Rajesh Sharma brings 25+ years of distinguished leadership in Indian and International curricula. An alumnus of Delhi University and recipient of the National Academic Leader Award.',
+    },
+    stats: {
+      totalStudents: { type: Number, default: 1250 },
+      totalTeachers: { type: Number, default: 68 },
+      classrooms: { type: Number, default: 45 },
+      labs: { type: Number, default: 8 },
+      awardsCount: { type: Number, default: 35 },
+    },
+    socialLinks: {
+      facebook: { type: String, default: 'https://facebook.com/skywingsschool' },
+      twitter: { type: String, default: 'https://twitter.com/skywingsschool' },
+      instagram: { type: String, default: 'https://instagram.com/skywingsschool' },
+      youtube: { type: String, default: 'https://youtube.com/skywingsschool' },
+      linkedin: { type: String, default: 'https://linkedin.com/school/skywingsschool' },
+    },
     currentAcademicSession: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'AcademicSession',

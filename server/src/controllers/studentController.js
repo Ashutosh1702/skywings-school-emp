@@ -243,11 +243,42 @@ const updateStudentStatus = async (req, res, next) => {
   }
 };
 
+// @desc    Delete student profile
+// @route   DELETE /api/students/:id
+// @access  Private (Admin only)
+const deleteStudent = async (req, res, next) => {
+  try {
+    const student = await Student.findByIdAndDelete(req.params.id);
+
+    if (!student) {
+      return res.status(404).json({ success: false, message: 'Student not found' });
+    }
+
+    if (req.user) {
+      await logAction({
+        userId: req.user._id,
+        action: 'DELETE_STUDENT',
+        entity: 'Student',
+        entityId: student._id,
+        details: {
+          name: `${student.firstName} ${student.lastName}`,
+          admissionNumber: student.admissionNumber,
+        },
+      });
+    }
+
+    res.status(200).json({ success: true, message: 'Student deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getStudents,
   createStudent,
   getStudentById,
   updateStudent,
   updateStudentStatus,
+  deleteStudent,
 };
 

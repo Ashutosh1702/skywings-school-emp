@@ -6,14 +6,16 @@ const {
   getStudentById,
   updateStudent,
   updateStudentStatus,
+  deleteStudent,
 } = require('../controllers/studentController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
-router.get('/', protect, getStudents);
+router.get('/', getStudents);
 router.post('/', protect, authorize('admin'), createStudent);
-router.get('/:id', protect, getStudentById);
+router.get('/:id', getStudentById);
 router.put('/:id', protect, authorize('admin'), updateStudent);
 router.patch('/:id/status', protect, authorize('admin'), updateStudentStatus);
+router.delete('/:id', protect, authorize('admin'), deleteStudent);
 
 module.exports = router;
 

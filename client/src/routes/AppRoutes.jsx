@@ -4,9 +4,20 @@ import { useAuth } from "../context/AuthContext";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 
 // Layouts
+import PublicLayout from "../layouts/PublicLayout";
 import AdminLayout from "../layouts/AdminLayout";
 import TeacherLayout from "../layouts/TeacherLayout";
 import ParentLayout from "../layouts/ParentLayout";
+
+// Public School Website Pages
+import Home from "../pages/public/Home";
+import About from "../pages/public/About";
+import PrincipalDesk from "../pages/public/PrincipalDesk";
+import Academics from "../pages/public/Academics";
+import Faculty from "../pages/public/Faculty";
+import NoticesEvents from "../pages/public/NoticesEvents";
+import Gallery from "../pages/public/Gallery";
+import Contact from "../pages/public/Contact";
 
 // Auth & Common Pages
 import Login from "../pages/auth/Login";
@@ -54,8 +65,20 @@ const RootRedirect = () => {
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public Routes */}
-      <Route path="/" element={<RootRedirect />} />
+      {/* Public School Website Routes */}
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/principal" element={<PrincipalDesk />} />
+        <Route path="/academics" element={<Academics />} />
+        <Route path="/faculty" element={<Faculty />} />
+        <Route path="/notices" element={<NoticesEvents />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/contact" element={<Contact />} />
+      </Route>
+
+      {/* Auth & Common Routes */}
+      <Route path="/portal" element={<RootRedirect />} />
       <Route path="/login" element={<Login />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
 

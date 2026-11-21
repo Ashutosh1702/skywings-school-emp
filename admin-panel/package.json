@@ -1,0 +1,11 @@
+{
+  "name": "admin-panel",
+  "version": "1.0.0",
+  "description": "SkyWings School Admin Panel CMS",
+  "scripts": {
+    "dev": "npm --prefix vite-project run dev",
+    "build": "npm --prefix vite-project run build",
+    "preview": "npm --prefix vite-project run preview"
+  }
+}
+

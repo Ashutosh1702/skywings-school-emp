@@ -126,9 +126,71 @@ const getTeacherById = async (req, res, next) => {
   }
 };
 
+// @desc    Update teacher profile
+// @route   PUT /api/teachers/:id
+// @access  Private (Admin only)
+const updateTeacher = async (req, res, next) => {
+  try {
+    const teacher = await Teacher.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    })
+      .populate('subjects', 'name code')
+      .populate('assignedClasses.class', 'name')
+      .populate('assignedClasses.section', 'name');
+
+    if (!teacher) {
+      return res.status(404).json({ success: false, message: 'Teacher not found' });
+    }
+
+    if (req.user) {
+      await logAction({
+        userId: req.user._id,
+        action: 'UPDATE_TEACHER',
+        entity: 'Teacher',
+        entityId: teacher._id,
+        details: req.body,
+      });
+    }
+
+    res.status(200).json({ success: true, data: teacher });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Delete teacher profile
+// @route   DELETE /api/teachers/:id
+// @access  Private (Admin only)
+const deleteTeacher = async (req, res, next) => {
+  try {
+    const teacher = await Teacher.findByIdAndDelete(req.params.id);
+
+    if (!teacher) {
+      return res.status(404).json({ success: false, message: 'Teacher not found' });
+    }
+
+    if (req.user) {
+      await logAction({
+        userId: req.user._id,
+        action: 'DELETE_TEACHER',
+        entity: 'Teacher',
+        entityId: teacher._id,
+        details: { name: teacher.name, employeeId: teacher.employeeId },
+      });
+    }
+
+    res.status(200).json({ success: true, message: 'Teacher removed successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getTeachers,
   createTeacher,
   getTeacherById,
+  updateTeacher,
+  deleteTeacher,
 };
 

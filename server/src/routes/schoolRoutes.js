@@ -10,7 +10,7 @@ const { protect, authorize } = require('../middleware/authMiddleware');
 
 router.get('/', getSchoolProfile);
 router.put('/', protect, authorize('admin'), updateSchoolProfile);
-router.get('/sessions', protect, getAcademicSessions);
+router.get('/sessions', getAcademicSessions);
 router.post('/sessions', protect, authorize('admin'), createAcademicSession);
 
 module.exports = router;

@@ -26,6 +26,24 @@ const announcementSchema = new mongoose.Schema(
       enum: ['normal', 'important', 'urgent'],
       default: 'normal',
     },
+    category: {
+      type: String,
+      enum: ['notice', 'event', 'calendar', 'news', 'circular'],
+      default: 'notice',
+    },
+    eventDate: {
+      type: Date,
+      default: null,
+    },
+    location: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    isPublicWebsite: {
+      type: Boolean,
+      default: true,
+    },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
